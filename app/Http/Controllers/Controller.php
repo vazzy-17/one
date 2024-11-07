@@ -13,7 +13,7 @@ class Controller extends BaseController
 
     public function index()
     {
-        return view ('login/login');
+        return view ('layouts/front_main');
     }
 
 }
