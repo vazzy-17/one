@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use DB;
 
 class PostController extends Controller
 {
@@ -68,4 +69,35 @@ class PostController extends Controller
         $post->delete();
         return response()->json(null, 204);
     }
+
+    public function get_code(Request $request)
+{
+    try {
+        // Validate the 'code_revisi' field
+        $request->validate(['code_revisi' => 'required|string']);
+
+        // Get 'code_revisi' input from the request
+        $code_revisi = $request->input('code_revisi');
+
+        // Query the database for the 'tr_ba_revisi_code'
+        $hasil = DB::connection('mysql2')->select(
+            "select * from Tr_BA_Revisi where tr_ba_main_code = ?",
+            [$code_revisi]
+        );
+
+        // Return the result as a JSON response
+        return response()->json([
+            'message' => 'Berhasil',
+            'data' => $hasil
+        ]);
+    } catch (\Exception $e) {
+        // Rollback the database transaction in case of an error
+        DB::rollback();
+        
+        // Return an error response if an exception occurs
+        return response()->json([
+            'error' => 'Data tidak ditemukan'
+        ], 404); // Optional: Adding HTTP status code 404 (Not Found)
+    }
+}
 }
