@@ -1,118 +1,102 @@
-<!DOCTYPE html>
-
-
-
-<style>
-    /* * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    } */
-
-    /* Basic styles for body */
-    /* body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-    } */
-
-    /* Navbar container */
-    .navbar {
-        /* background-color: #333;
-        color: #fff;
-        padding: 15px 20px;
-        display: flex; */
-        /* justify-content: space-between; */
-        /* align-items: center; */
-        
-    }
-
-    /* Brand/logo on the left */
-    .navbar-brand {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    /* Navbar menu (ul element) */
-    .navbar-menu {
-        list-style-type: none;
-        display: flex;
-    }
-
-    /* Individual links inside the navbar */
-    /* .navbar-menu li {
-        margin: 0 10px;
-    } */
-
-    /* Links styling */
-    /* .navbar-menu a {
-        text-decoration: none;
-        color: #fff;
-        padding: 8px 12px;
-        transition: background-color 0.3s ease;
-    } */
-
-    /* Hover effect for links */
-    /* .navbar-menu a:hover {
-        background-color: #575757;
-        border-radius: 4px;
-    } */
-
-    /* Responsive design for smaller screens */
-    /* @media (max-width: 768px) {
-        .navbar {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .navbar-menu {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .navbar-menu li {
-            margin: 5px 0;
-        }
-    } */
-
-    /* Reset margin and padding */
-    /* * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    } */
-
-    /* Body styling */
-    /* body {
-        font-family: Arial, sans-serif;
-    } */
-
-   
-</style>
-
-
+{{-- <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navbar Example</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Binance Price AJAX</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
+    <h1>Get Cryptocurrency Price</h1>
+    <button id="fetch-price">Get BTC Price</button>
 
-    <nav class="navbar">
-        <div class="navbar-brand">MyWebsite</div>
-        <ul class="navbar-menu">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+    <h2>Result:</h2>
+    <p>Symbol: <span id="crypto-symbol">-</span></p>
+    <p>Price: <span id="crypto-price">-</span></p>
 
-   
-
+    <script>
+        $(document).ready(function () {
+            // Event listener for button click
+            $('#fetch-price').click(function () {
+                // Make AJAX request
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/api/binance/price/BTCUSDT', // URL API
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            // Update the DOM with API response
+                            $('#crypto-symbol').text(response.data.symbol);
+                            $('#crypto-price').text(response.data.price);
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                        alert('Failed to fetch data from API.');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
+</html> --}}
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoinGecko Price</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Get Cryptocurrency Price</h1>
+
+    <!-- Input untuk memasukkan simbol koin (misalnya: bitcoin, ethereum, dogecoin) -->
+    <label for="coinSymbol">Enter Coin Symbol (e.g., bitcoin): </label>
+    <input type="text" id="coinSymbol" name="coinSymbol" placeholder="e.g., bitcoin">
+    <button id="getPriceBtn">Get Price</button>
+
+    <div id="priceResult"></div>
+
+    <script>
+        $(document).ready(function () {
+            // Event listener untuk tombol Get Price
+            $('#getPriceBtn').click(function () {
+                // Ambil simbol koin dari input
+                var coinSymbol = $('#coinSymbol').val().trim().toLowerCase();
+
+                // Validasi input agar tidak kosong
+                if (!coinSymbol) {
+                    alert('Please enter a valid coin symbol');
+                    return;
+                }
+
+                // Lakukan AJAX request ke API Laravel
+                $.ajax({
+                    url: 'api/coingecko/price/' + coinSymbol, // URL API yang dibuat di Laravel
+                    type: 'GET',
+                    success: function (response) {
+                        // Tampilkan hasil harga jika request sukses
+                        if (response.status === 'success') {
+                            var price = response.data[coinSymbol].usd;
+                            $('#priceResult').html(
+                                '<h2>The current price of ' + coinSymbol.toUpperCase() + ' is $' + price + '</h2>'
+                            );
+                        } else {
+                            $('#priceResult').html('<p>Failed to fetch price. Please try again.</p>');
+                        }
+                    },
+                    error: function () {
+                        // Menangani jika ada error dalam request
+                        $('#priceResult').html('<p>Error fetching data. Please check your connection or try again later.</p>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
 </html>
+
