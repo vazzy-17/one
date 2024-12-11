@@ -1,4 +1,4 @@
-@extends('layouts.front_main')
+@extends('layouts.main')
 @section('title', 'Transaksi')
 
 @section('scripts')
